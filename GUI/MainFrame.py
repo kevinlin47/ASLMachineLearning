@@ -3,8 +3,7 @@ from tkinter import *
 from tkinter.filedialog import askopenfilename
 
 
-# Function for uploading button
-def import_video():
+def import_video():  # Function for uploading button
     file_name = askopenfilename(filetypes=(("MP4 Files", "*.mp4"), ("All files", "*.*")))
     print(file_name)
 
