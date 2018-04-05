@@ -7,6 +7,14 @@ def import_video():  # Function for uploading button
     file_name = askopenfilename(filetypes=(("MP4 Files", "*.mp4"), ("All files", "*.*")))
     print(file_name)
 
+    video_label = Label(top, anchor=CENTER, text=file_name)
+    video_label.pack()
+
+
+def cancel_video():  # Function for cancel button
+    # Clear window
+    print()
+
 
 top = tkinter.Tk()  # Create root window
 top.title("Program B.V-1")  # Root window title
