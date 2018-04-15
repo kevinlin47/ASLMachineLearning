@@ -28,7 +28,7 @@ Within your virtual environment
 pip3 install requirements.txt
 ```
 
-### (Option) Tensorflow GPU users
+### (Optional) Tensorflow GPU users
 
 ```
 pip3 install requirements-gpu.txt
