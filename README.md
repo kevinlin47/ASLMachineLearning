@@ -25,13 +25,13 @@ mkvirtualenv asl
 Within your virtual environment
 
 ```
-pip install requirements.txt
+pip3 install requirements.txt
 ```
 
 ### (Option) Tensorflow GPU users
 
 ```
-pip install requirements-gpu.txt
+pip3 install requirements-gpu.txt
 ```
 
 
