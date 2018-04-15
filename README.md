@@ -52,6 +52,8 @@ To test out gesture prediction
 python3 test-nn.py
 ```
 
-## License
+## To-Do-List
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+- [] Add GUI for demo
+- [] Create an OpenCV function to parse an input video and run it through our model to predict the gesture
+- [] (Optional) Add additional gestures
