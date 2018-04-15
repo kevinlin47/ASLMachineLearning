@@ -54,6 +54,6 @@ python3 test-nn.py
 
 ## To-Do-List
 
-- [] Add GUI for demo
-- [] Create an OpenCV function to parse an input video and run it through our model to predict the gesture
-- [] (Optional) Add additional gestures
+- [ ] Add GUI for demo
+- [ ] Create an OpenCV function to parse an input video and run it through our model to predict the gesture
+- [ ] (Optional) Add additional gestures
