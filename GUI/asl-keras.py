@@ -30,7 +30,7 @@ feature_length = 2048
 
 
 # Run initially to make sure all the videos are saved into memory
-# save_data_to_memory(gestures, 100)
+save_data_to_memory(gestures, 100)
 
 # Get all our data from memory
 x, y = get_data_from_memory(gestures, 100)
