@@ -36,7 +36,7 @@ if not os.path.exists("data/labels"):
 	os.makedirs("data/labels")
 
 # Run initially to make sure all the videos are saved into memory
-save_data_to_memory(gestures, 100)
+# save_data_to_memory(gestures, 100)
 
 # Get all our data from memory
 x, y = get_data_from_memory(gestures, 100)
@@ -47,25 +47,23 @@ label_encoder.fit(gestures)
 y_label_encoded = label_encoder.transform(y)
 
 # Transform the encoded y into one-hot arrays
-y = np_utils.to_categorical(y_label_encoded, num_classes)
-
+# y = np_utils.to_categorical(y_label_encoded, num_classes)
 y = y_label_encoded
-
-
-
-Split x and y into train and test batches
-x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=seed)
 
 input_shape = (num_frames, feature_length)
 batch_size = 32
-num_epochs = 16
+num_epochs = 5
+count = 0
 
 
 # define 10-fold cross validation test harness
 kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=seed)
 cvscores = []
 for train, test in kfold.split(x, y):
-  # create model
+	# create model
+	if (count < 1):
+		y = np_utils.to_categorical(y, num_classes)
+		count = 1
 
 	model = Sequential()
 	model.add(LSTM(2048, return_sequences=False,
@@ -80,9 +78,6 @@ for train, test in kfold.split(x, y):
 		optimizer=optimizers.SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True), 
 		metrics=['accuracy'])
 
-
-	print(x[train].shape)
-	print(y[train].shape)
 	# Fit the model
 	model.fit(x[train], y[train], epochs=num_epochs, batch_size=batch_size, verbose=0)
 
@@ -92,4 +87,4 @@ for train, test in kfold.split(x, y):
 	print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
 	cvscores.append(scores[1] * 100)
 
-print("%.2f%% (+/- %.2f%%)" % (numpy.mean(cvscores), numpy.std(cvscores)))
+print("%.2f%% (+/- %.2f%%)" % (np.mean(cvscores), np.std(cvscores)))
