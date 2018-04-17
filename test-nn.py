@@ -76,7 +76,7 @@ for frame in range(1,21):
 
 # LabelEncoder() should come fitted with an array of gestures already
 # but this is needed as a test
-gestures = ['goodbye', 'no', 'yes']
+gestures = ['goodbye', 'hey', 'no', 'yes']
 label_encoder = preprocessing.LabelEncoder()
 label_encoder.fit(gestures)
 
