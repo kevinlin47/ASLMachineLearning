@@ -28,7 +28,7 @@ num_classes = len(gestures)
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 feature_length = 2048
 
-# Create data folders for both features and labels to save into
+
 if not os.path.exists("data/features"):
 	os.makedirs("data/features")
 
@@ -49,42 +49,47 @@ y_label_encoded = label_encoder.transform(y)
 # Transform the encoded y into one-hot arrays
 y = np_utils.to_categorical(y_label_encoded, num_classes)
 
-# Randomly shuffle x and y arrays to mix up the data, but keep row parity
-s = np.arange(x.shape[0])
-np.random.shuffle(s)
-x = x[s]
-y = y[s]
+y = y_label_encoded
 
-# Split x and y into train and test batches
+
+
+Split x and y into train and test batches
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=seed)
 
 input_shape = (num_frames, feature_length)
 batch_size = 32
 num_epochs = 16
 
-# Initialize NN model structure
-model = Sequential()
-model.add(LSTM(2048, return_sequences=False,
-               input_shape=input_shape,
-               dropout=0.5))
-model.add(Dense(512, activation='relu'))
-model.add(Dropout(0.5))
-model.add(Dense(num_classes, activation='softmax'))
 
-# Compile model
-model.compile(loss='categorical_crossentropy', 
-	optimizer=optimizers.SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True), 
-	metrics=['accuracy'])
+# define 10-fold cross validation test harness
+kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=seed)
+cvscores = []
+for train, test in kfold.split(x, y):
+  # create model
 
-# Print model structure
-print(model.summary())
+	model = Sequential()
+	model.add(LSTM(2048, return_sequences=False,
+				input_shape=input_shape,
+				dropout=0.5))
+	model.add(Dense(512, activation='relu'))
+	model.add(Dropout(0.5))
+	model.add(Dense(num_classes, activation='softmax'))
 
-# Train model
-model.fit(x_train, y_train, batch_size=batch_size, epochs=num_epochs, verbose=1, validation_data=(x_test, y_test))
+	# Compile model
+	model.compile(loss='categorical_crossentropy', 
+		optimizer=optimizers.SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True), 
+		metrics=['accuracy'])
 
-# Evaluate model
-scores = model.evaluate(x, y, verbose=0)
-print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
 
-# Save model to refer to later
-model.save('my_model.h5')
+	print(x[train].shape)
+	print(y[train].shape)
+	# Fit the model
+	model.fit(x[train], y[train], epochs=num_epochs, batch_size=batch_size, verbose=0)
+
+	# evaluate the model
+	scores = model.evaluate(x[train], y[train], verbose=0)
+
+	print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
+	cvscores.append(scores[1] * 100)
+
+print("%.2f%% (+/- %.2f%%)" % (numpy.mean(cvscores), numpy.std(cvscores)))
