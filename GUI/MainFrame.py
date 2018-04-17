@@ -1,7 +1,6 @@
-import Tkinter
-from Tkinter import *
-import FileDialog
-from tkFileDialog import askopenfilename
+import tkinter
+from tkinter import *
+from tkinter.filedialog import askopenfilename
 
 
 def import_video():  # Function for uploading button
@@ -17,7 +16,7 @@ def cancel_video():  # Function for cancel button
     print()
 
 
-top = Tkinter.Tk()  # Create root window
+top = tkinter.Tk()  # Create root window
 top.title("Program B.V-1")  # Root window title
 top.resizable(0, 0)  # Do not allow user to resize the window
 top.geometry("500x500")  # Set window size to 500x500 pixels
