@@ -23,7 +23,7 @@ img_height = 640
 img_width = 360
 seed = 7
 np.random.seed(seed)
-gestures = ['goodbye', 'no', 'yes']
+gestures = ['goodbye', 'hey', 'no', 'yes']
 num_classes = len(gestures)
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 feature_length = 2048
@@ -36,7 +36,7 @@ if not os.path.exists("data/labels"):
 	os.makedirs("data/labels")
 
 # Run initially to make sure all the videos are saved into memory
-save_data_to_memory(gestures, 100)
+# save_data_to_memory(gestures, 100)
 
 # Get all our data from memory
 x, y = get_data_from_memory(gestures, 100)
@@ -56,7 +56,7 @@ x = x[s]
 y = y[s]
 
 # Split x and y into train and test batches
-x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=seed)
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.4, random_state=seed)
 
 input_shape = (num_frames, feature_length)
 batch_size = 32

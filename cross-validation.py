@@ -23,7 +23,7 @@ img_height = 640
 img_width = 360
 seed = 7
 np.random.seed(seed)
-gestures = ['goodbye', 'no', 'yes']
+gestures = ['goodbye', 'hey', 'no', 'yes']
 num_classes = len(gestures)
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 feature_length = 2048
