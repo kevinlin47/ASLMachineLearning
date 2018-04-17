@@ -32,9 +32,11 @@ cancel_button.config(height=1, width=10)  # resize the button
 exit_button.config(height=1, width=10)    # resize the button
 
 # Testing tkinter widget layout manager
+# Place GUI Widgets onto the root window
 import_button.pack()
 cancel_button.pack()
 exit_button.pack()
 video_label.pack()
 
+# Execute root window
 top.mainloop()
