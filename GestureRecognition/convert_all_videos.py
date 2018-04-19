@@ -1,6 +1,7 @@
 import numpy as np
 import cv2
-import os
+import os, os.path
+import random
 import argparse
 import keras.preprocessing.image as kpi
 from PIL import Image
@@ -28,9 +29,13 @@ def save_data_to_memory(gestures, num_videos = 5, num_frames = 20):
     for classifier in classifiers:
         for num in range(1,num_videos+1):
             sequence = []
-            for frame in range(1,num_frames+1):
+            file = "video/"+classifier+str(num)
+            total_frames = len([name for name in os.listdir(file) if os.path.isfile(os.path.join(file,name))])
+            ran_range = random.sample(range(1,total_frames),num_frames)
+            ran_range.sort()
+            for frame in ran_range:
 
-                file = "videos/"+classifier+str(num)+"/frame"+str(frame)+".jpg"
+                file = file+"/frame"+str(frame)+".jpg"
                 print(file)
 
                 if os.path.isfile("data/features/"+classifier+str(num) + ".npy"):

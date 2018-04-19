@@ -8,9 +8,9 @@ def nothing(x):
     pass
 
 cv2.namedWindow('Variable Values')
-cv2.createTrackbar('blur', 'Variable Values',11,179,nothing)
+cv2.createTrackbar('blur', 'Variable Values',1,179,nothing)
 cv2.createTrackbar('wait', 'Variable Values', 25, 100, nothing)
-cv2.createTrackbar('mask', 'Variable Values', 40, 255, nothing)
+cv2.createTrackbar('mask', 'Variable Values', 20, 255, nothing)
 cv2.createTrackbar('mask_lower', 'Variable Values',0, 255, nothing)
 face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 blur_val = 10
