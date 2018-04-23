@@ -6,6 +6,9 @@ import os
 import argparse
 import datetime
 import h5py
+import pydot_ng
+import graphviz
+import matplotlib.pyplot as plt
 
 from time import time, gmtime, strftime
 from PIL import Image
@@ -15,7 +18,7 @@ from GestureRecognition.convert_all_videos import save_data_to_memory, get_data_
 
 from keras.models import Sequential, load_model
 from keras.layers import Dense, LSTM, Dropout
-from keras.utils import np_utils
+from keras.utils import np_utils, plot_model
 from keras import optimizers
 
 num_frames = 20
@@ -23,23 +26,25 @@ img_height = 640
 img_width = 360
 seed = 7
 np.random.seed(seed)
-gestures = ['goodbye', 'hey', 'no', 'yes']
+# gestures = ['goodbye', 'hey', 'no', 'yes']
+gestures = ['find', 'goodbye', 'hey', 'no', 'yes']
 num_classes = len(gestures)
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 feature_length = 2048
 
 # Create data folders for both features and labels to save into
 if not os.path.exists("data/features"):
-	os.makedirs("data/features")
+	os.makedirs("data/features")	
 
 if not os.path.exists("data/labels"):
 	os.makedirs("data/labels")
 
+
 # Run initially to make sure all the videos are saved into memory
-# save_data_to_memory(gestures, 100)
+save_data_to_memory(gestures, 200)
 
 # Get all our data from memory
-x, y = get_data_from_memory(gestures, 100)
+x, y = get_data_from_memory(gestures, 200)
 
 # Label encode the gesture strings
 label_encoder = preprocessing.LabelEncoder()
@@ -71,6 +76,9 @@ model.add(Dense(512, activation='relu'))
 model.add(Dropout(0.5))
 model.add(Dense(num_classes, activation='softmax'))
 
+# Output model structure as .png
+# plot_model(model, to_file='model_plot.png', show_shapes=True, show_layer_names=True)
+
 # Compile model
 model.compile(loss='categorical_crossentropy', 
 	optimizer=optimizers.SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True), 
@@ -80,7 +88,7 @@ model.compile(loss='categorical_crossentropy',
 print(model.summary())
 
 # Train model
-model.fit(x_train, y_train, batch_size=batch_size, epochs=num_epochs, verbose=1, validation_data=(x_test, y_test))
+history = model.fit(x_train, y_train, batch_size=batch_size, epochs=num_epochs, verbose=1, validation_data=(x_test, y_test))
 
 # Evaluate model
 scores = model.evaluate(x, y, verbose=0)
@@ -88,3 +96,22 @@ print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
 
 # Save model to refer to later
 model.save('my_model.h5')
+
+# Plot model accuracy results
+acc = history.history['acc']
+acc = [100*i for i in acc]
+val_acc = history.history['val_acc']
+val_acc = [100*i for i in val_acc]
+
+fig, ax = plt.subplots()
+
+x_range = np.arange(1,17,1)
+ax.xaxis.set_ticks(x_range)
+plt.ylabel('accuracy')
+plt.xlabel('epochs')
+plt.title('model accuracy')
+
+# plt.plot(x_range, acc, marker='o')
+ax.plot(x_range, val_acc, marker='o')
+ax.legend(['accuracy'], loc='lower right')
+plt.show()

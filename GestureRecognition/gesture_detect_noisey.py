@@ -282,7 +282,7 @@ else:
         #Mask blurred image with Hue values of 0-20.
         mask_hsv = cv2.getTrackbarPos('mask','Variable Values')
         lower_mask = cv2.getTrackbarPos('mask_lower','Variable Values')
-        mask = cv2.inRange(hsv,np.array([lower_mask,90,90]),np.array([mask_hsv,255,255]))
+        mask = cv2.inRange(hsv,np.array([lower_mask,50,50]),np.array([mask_hsv,255,255]))
         
         #Kernel matrices for morphological transformation    
         kernel_square = np.ones((11,11),np.uint8)
@@ -436,12 +436,12 @@ else:
         outfilename = filename_exploded[len(filename_exploded)-1]
         #print(mask[calibrated_y:calibrated_y+510, calibrated_x:calibrated_x+310].shape)
         #out.write(mask)
+        if calibrated_y+640 > mask.shape[0]:
+            calibrated_y = mask.shape[0]-640 
         cv2.imshow('Hand_Mask', mask[calibrated_y:calibrated_y+640, calibrated_x:calibrated_x+360])
         #cv2.imshow('Hand_Mask', mask[calibrated_y:calibrated_y+510, calibrated_x:calibrated_x+310])
         if not os.path.exists("noisy_videos/"+outfilename):
             os.makedirs("noisy_videos/"+outfilename)
-        if calibrated_y+640 > mask.shape[0]:
-            calibrated_y = mask.shape[0]-640 
         cv2.imwrite("noisy_videos/"+outfilename+"/frame"+str(cycle)+".jpg",  mask[calibrated_y:calibrated_y+640, calibrated_x:calibrated_x+360])
         #print(mask.shape)
         #handjson = {'frame'+str(cycle): mask[calibrated_y:calibrated_y+510, calibrated_x:calibrated_x+310].tolist()}

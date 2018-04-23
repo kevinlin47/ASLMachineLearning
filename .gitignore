@@ -100,8 +100,12 @@ ENV/
 # mypy
 .mypy_cache/
 
+# Folders
 data/
+videos/
 
 # .h5 model files
-
 *.h5
+
+# Picture files
+*.png

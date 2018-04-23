@@ -6,6 +6,8 @@ import os
 import argparse
 import datetime
 import h5py
+import matplotlib.pyplot as plt
+
 
 from time import time, gmtime, strftime
 from PIL import Image
@@ -39,7 +41,7 @@ if not os.path.exists("data/labels"):
 # save_data_to_memory(gestures, 100)
 
 # Get all our data from memory
-x, y = get_data_from_memory(gestures, 100)
+x, y = get_data_from_memory(gestures, 10)
 
 # Label encode the gesture strings
 label_encoder = preprocessing.LabelEncoder()
@@ -52,13 +54,19 @@ y = y_label_encoded
 
 input_shape = (num_frames, feature_length)
 batch_size = 32
-num_epochs = 5
+num_epochs = 32
 count = 0
+n_splits = 10
+
+# Matlab Graph variables
+accuracies = []
+
 
 
 # define 10-fold cross validation test harness
-kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=seed)
+kfold = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=seed)
 cvscores = []
+
 for train, test in kfold.split(x, y):
 	# create model
 	if (count < 1):
@@ -84,7 +92,34 @@ for train, test in kfold.split(x, y):
 	# evaluate the model
 	scores = model.evaluate(x[train], y[train], verbose=0)
 
+	accuracies.append(scores[1]*100)
+
 	print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
 	cvscores.append(scores[1] * 100)
 
 print("%.2f%% (+/- %.2f%%)" % (np.mean(cvscores), np.std(cvscores)))
+
+
+
+# Plot cross-validation results
+fig, ax = plt.subplots()
+start, end = ax.get_xlim()
+x_range = np.arange(1,n_splits+1,1)
+x_mean = np.arange(0,n_splits+1,1)
+
+plt.xlabel('k-fold')
+plt.ylabel('accuracy')
+plt.title('k-fold cross-validation')
+
+ax.xaxis.set_ticks(x_mean)
+ax.set_xlim([0,n_splits+0.2])
+
+x_mean = np.append(x_mean, n_splits+2)
+y_mean = np.mean(cvscores)
+y_mean = np.repeat(y_mean, len(x_mean))
+
+
+acc_plot = ax.plot(x_range, accuracies, label='accuracy', marker='o', linestyle = 'None')
+mean_line = ax.plot(x_mean, y_mean, label='mean', linestyle='--')
+legend = ax.legend(loc='lower left')
+plt.show()
