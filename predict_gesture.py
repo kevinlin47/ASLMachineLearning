@@ -14,6 +14,7 @@ from keras.models import Sequential, load_model
 from keras.layers import Dense, LSTM, Flatten, Dropout
 from keras.callbacks import ModelCheckpoint
 from extractor import Extractor
+import GestureRecognition.gesture_detect as gesture_detect
 
 
 """
@@ -28,25 +29,25 @@ an output gesture
 
 """
 
-def predict_gesture(input_data):
+def predict_gesture(filename):
 
-	# if not os.path.exists("test_data"):
-	# 	os.makedirs("test_data")
+	if not os.path.exists("test_data"):
+		os.makedirs("test_data")
 
 	gestures = ['goodbye', 'hey', 'no', 'yes']
 	label_encoder = preprocessing.LabelEncoder()
 	label_encoder.fit(gestures)
-
-	# model = Extractor()
-	# sequence = []
-	# for frame in range(1,21):
-
-	# 	try:
-	# 		features = model.extract(file)
-	# 	except IOError:
-	# 		print("Could not extract file " + file)
-	# 	sequence.append(features)
-	# 	np.save("test_data/"+filename + ".npy", sequence)
+	gesture_detect.detect(filename)
+	model = Extractor()
+	sequence = []
+	for frame in range(1,21):
+		file = "test_data/frame"+str(frame)+".jpg"
+		try:
+			features = model.extract(file)
+		except IOError:
+			print("Could not extract file " + file)
+		sequence.append(features)
+		np.save("test_data/test_data.npy", sequence)
 
 
 	# label_encoder = label_encoder
@@ -55,8 +56,8 @@ def predict_gesture(input_data):
 
 	model = load_model('my_model.h5')
 
-	# input_data = np.load("test_data/"+filename + ".npy")
-	input_data = input_data
+	input_data = np.load("test_data/test_data.npy")
+	#input_data = input_data
 
 	pad = np.random.rand(20,2048)
 
@@ -94,8 +95,8 @@ if filename is None:
 # Gao should work on code to get an input video's feature data in the form of .npy w/ shape (20, 2048)
 # test = np.load("test_data/" + filename + ".npy")
 # test = np.load('data/features/yes50.npy')
-test = np.random.rand(20,2048)
-print(test)
+#test = np.random.rand(20,2048)
+#print(test)
 
-predict_gesture(test)
+#predict_gesture(test)
 
